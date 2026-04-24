@@ -1,0 +1,192 @@
+[
+  {
+    "id": 1,
+    "question": "ACE says prior context adaptation methods often suffer from two specific failure modes. What are they, and what modular process does ACE use to avoid them?",
+    "expected_tool": "retrieve",
+    "reference_context": "Large language model (LLM) applications such as agents and domain-specific reasoning increasingly rely on context adaptation-modifying inputs with instructions, strategies, or evidence, rather than weight updates. Prior approaches improve usability but often suffer from brevity bias, which drops domain insights for concise summaries, and from context collapse, where iterative rewriting erodes details over time. Building on the adaptive memory introduced by Dynamic Cheatsheet, we introduce ACE (Agentic Context Engineering), a framework that treats contexts as evolving playbooks that accumulate, refine, and organize strategies through a modular process of generation, reflection, and curation. ACE prevents collapse with structured, incremental updates that preserve detailed knowledge and scale with long-context models.",
+    "reference_answer": "The two failure modes are brevity bias and context collapse. ACE addresses them by treating contexts as evolving playbooks and updating them through generation, reflection, and curation with structured, incremental changes.",
+    "metadata": {
+      "title": "Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models",
+      "file_name": "Agentic Context Engineering.pdf"
+    }
+  },
+  {
+    "id": 2,
+    "question": "How does the paper define context adaptation, and which representative methods does it cite as natural-language feedback approaches?",
+    "expected_tool": "retrieve",
+    "reference_context": "Context adaptation (or context engineering) refers to methods that improve model behavior by constructing or modifying inputs to an LLM, rather than altering its weights. The current state of the art leverages natural language feedback [4, 40, 54]. In this paradigm, a language model inspects the current context along with signals such as execution traces, reasoning steps, or validation results, and generates natural language feedback on how the context should be revised. This feedback is then incorporated into the context, enabling iterative adaptation. Representative methods include Reflexion [40], which reflects on failures to improve agent planning; TextGrad [54], which optimizes prompts via gradient-like textual feedback; GEPA [4], which refines prompts iteratively based on execution traces and achieves strong performance, even surpassing reinforcement learning approaches in some settings; and Dynamic Cheatsheet [41], which constructs an external memory that accumulates strategies and lessons from past successes and failures during inference.",
+    "reference_answer": "The paper defines context adaptation as improving model behavior by constructing or modifying the LLM's inputs instead of changing its weights. The representative natural-language feedback methods it names are Reflexion, TextGrad, GEPA, and Dynamic Cheatsheet.",
+    "metadata": {
+      "title": "Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models",
+      "file_name": "Agentic Context Engineering.pdf"
+    }
+  },
+  {
+    "id": 3,
+    "question": "What core architectural change does the Transformer make relative to earlier sequence transduction models, and what training and quality gains does the abstract report?",
+    "expected_tool": "retrieve",
+    "reference_context": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English- to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature.",
+    "reference_answer": "The Transformer replaces recurrent and convolutional sequence transduction architecture with attention mechanisms alone. The abstract reports that it is more parallelizable, requires much less training time, reaches 28.4 BLEU on WMT 2014 English-to-German, and reaches 41.8 BLEU on WMT 2014 English-to-French after 3.5 days on eight GPUs.",
+    "metadata": {
+      "title": "Attention Is All You Need",
+      "file_name": "Attention Is All You Need.pdf"
+    }
+  },
+  {
+    "id": 4,
+    "question": "What computational advantage does the Transformer claim for relating distant positions, and what drawback does multi-head attention help counteract?",
+    "expected_tool": "retrieve",
+    "reference_context": "The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU [16], ByteNet [18] and ConvS2S [9], all of which use convolutional neural networks as basic building block, computing hidden representations in parallel for all input and output positions. In these models, the number of operations required to relate signals from two arbitrary input or output positions grows in the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes it more difficult to learn dependencies between distant positions [12]. In the Transformer this is reduced to a constant number of operations, albeit at the cost of reduced effective resolution due to averaging attention-weighted positions, an effect we counteract with Multi-Head Attention as described in section 3.2.",
+    "reference_answer": "The Transformer reduces the number of operations needed to relate arbitrary positions to a constant, instead of the distance-dependent costs in ConvS2S and ByteNet. The tradeoff is reduced effective resolution from averaging attention-weighted positions, and multi-head attention helps counteract that.",
+    "metadata": {
+      "title": "Attention Is All You Need",
+      "file_name": "Attention Is All You Need.pdf"
+    }
+  },
+  {
+    "id": 5,
+    "question": "According to the paper, what two decisions define dynamic RAG, and why is single-round retrieval not enough for complex multi-step or long-form tasks?",
+    "expected_tool": "retrieve",
+    "reference_context": "Retrieval-Augmented Generation (RAG) enhances LLMs by retrieving and incorporating relevant information from external databases into the LLMs' inputs. Traditional methods of RAG typically rely on single-round retrieval, using the LLM's initial input to retrieve relevant information from external corpora. While this method is effective for straightforward tasks, it tends to fall short for complex multi-step tasks and long-form generation tasks. In contrast, dynamic RAG performs multiple times of retrieval during the generation process of LLMs. It includes two steps: identifying the optimal moment to activate the retrieval module (deciding when to retrieve), and crafting the appropriate query once retrieval is triggered (determining what to retrieve).",
+    "reference_answer": "Dynamic RAG is defined by deciding when to retrieve and deciding what to retrieve. Single-round retrieval is not enough because it only uses the initial input, which works for simple cases but falls short on complex multi-step tasks and long-form generation.",
+    "metadata": {
+      "title": "DRAGIN: Dynamic Retrieval Augmented Generation based on the Information Needs of Large Language Models",
+      "file_name": "Dynamic RAG by TsinguaU.pdf"
+    }
+  },
+  {
+    "id": 6,
+    "question": "What two shortcomings of existing dynamic RAG methods does DRAGIN identify, and how does the paper frame DRAGIN's solution?",
+    "expected_tool": "retrieve",
+    "reference_context": "There are two key elements of this paradigm: identifying the optimal moment to activate the retrieval module (deciding when to retrieve) and crafting the appropriate query once retrieval is triggered (determining what to retrieve). However, current dynamic RAG methods fall short in both aspects. Firstly, the strategies for deciding when to retrieve often rely on static rules. Moreover, the strategies for deciding what to retrieve typically limit themselves to the LLM's most recent sentence or the last few tokens, while the LLM's information needs may span across the entire context. To overcome these limitations, we introduce a new framework, DRAGIN, i.e., Dynamic Retrieval Augmented Generation based on the Information Needs of LLMs. Our framework is specifically designed to make decisions on when and what to retrieve based on the LLM's information needs during the text generation process.",
+    "reference_answer": "The two shortcomings are that current methods use static rules for when to retrieve and they narrow what to retrieve to the most recent sentence or last few tokens. DRAGIN's solution is to make both decisions based on the LLM's information needs across the generation process.",
+    "metadata": {
+      "title": "DRAGIN: Dynamic Retrieval Augmented Generation based on the Information Needs of Large Language Models",
+      "file_name": "Dynamic RAG by TsinguaU.pdf"
+    }
+  },
+  {
+    "id": 7,
+    "question": "How is HOTPOTQA collected, and what two additions does the paper highlight beyond simply asking multi-document questions?",
+    "expected_tool": "retrieve",
+    "reference_context": "We present HOTPOTQA, a large-scale dataset that satisfies these desiderata. HOTPOTQA is collected by crowdsourcing based on Wikipedia articles, where crowd workers are shown multiple supporting context documents and asked explicitly to come up with questions requiring reasoning about all of the documents. This ensures it covers multi-hop questions that are more natural, and are not designed with any pre-existing knowledge base schema in mind. Moreover, we also ask the crowd workers to provide the supporting facts they use to answer the question, which we also provide as part of the dataset. Finally, we also collected a novel type of questions-comparison questions-as part of HOTPOTQA, in which we require systems to compare two entities on some shared properties to test their understanding of both language and common concepts such as numerical magnitude.",
+    "reference_answer": "HOTPOTQA is collected by crowdsourcing over Wikipedia with multiple supporting documents shown to the worker. Beyond multi-document questions, the paper highlights sentence-level supporting facts and comparison questions that require systems to compare entities on shared properties.",
+    "metadata": {
+      "title": "HOTPOTQA: A Dataset for Diverse, Explainable Multi-hop Question Answering",
+      "file_name": "HOTPOTQA ADataset for Diverse.pdf"
+    }
+  },
+  {
+    "id": 8,
+    "question": "What reasoning types does the paper say appear in HOTPOTQA, and what do comparison questions require from a system?",
+    "expected_tool": "retrieve",
+    "reference_context": "Most of the questions require at least one supporting fact from each paragraph to answer. A majority of sampled questions (42%) require chain reasoning (Type I in the table), where the reader must first identify a bridge entity before the second hop can be answered by filling in the bridge. In some questions (Type III), the entity in question shares certain properties with a bridge entity, and we can infer its properties through the bridge entity. Another type of question involves locating the answer entity by satisfying multiple properties simultaneously (Type II). Questions comparing two entities (Comparison) also require the system to understand the properties in question about the two entities, and sometimes require arithmetic.",
+    "reference_answer": "The paper says HOTPOTQA includes chain reasoning with a bridge entity, inference through a bridge entity, and questions that locate an answer by satisfying multiple properties simultaneously. Comparison questions require the system to understand the properties of both entities and sometimes perform arithmetic.",
+    "metadata": {
+      "title": "HOTPOTQA: A Dataset for Diverse, Explainable Multi-hop Question Answering",
+      "file_name": "HOTPOTQA ADataset for Diverse.pdf"
+    }
+  },
+  {
+    "id": 9,
+    "question": "What kinds of data make manufacturing QA difficult according to the paper, and why does that make information retrieval harder?",
+    "expected_tool": "retrieve",
+    "reference_context": "The complexity of manufacturing data presents a unique challenge for effective information retrieval and QA. Manufacturing documents span a wide array of data types, including text, images, formulas, Computer-aided design (CAD) models, tables, sensor data, and videos. Each format holds critical information necessary for understanding and optimizing manufacturing processes, designs, and operational insights. For example, text data may contain operational guidelines, maintenance logs, or compliance records that require natural language processing for efficient retrieval. Images, like defect photos or assembly line snapshots, demand computer vision techniques to identify patterns or detect quality issues. Formulas and equations, embedded in documentation, need precise recognition and interpretation to enable accurate replication and troubleshooting of complex processes.",
+    "reference_answer": "The paper says manufacturing QA has to deal with text, images, formulas, CAD models, tables, sensor data, and videos. Retrieval is harder because each format carries important process information and needs different processing methods, such as NLP for text, computer vision for images, and precise interpretation for formulas.",
+    "metadata": {
+      "title": "ManuRAG: multi-modal retrieval augmented generation for manufacturing question answering",
+      "file_name": "ManuRAG.pdf"
+    }
+  },
+  {
+    "id": 10,
+    "question": "What two multi-modal RAG strategies does the paper describe, and why does manufacturing still require tailored solutions even with those strategies?",
+    "expected_tool": "retrieve",
+    "reference_context": "Standard RAG operates solely on text, multi-modal RAG fuses image and document embeddings, typically following one of two strategies: (1) converting images into descriptive text for seamless integration into text-based workflows, and (2) aligning text and image data in a shared embedding space using multi-modal embeddings like Contrastive Language-Image Pre-Training (CLIP) and Jina-CLIP. These methods enable models to retrieve and reason across modalities, enhancing their performance on tasks that require both visual and textual comprehension. While multi-modal RAG has shown applications in domains such as healthcare, its potential remains underexplored in manufacturing. The manufacturing domain demands tailored solutions capable of handling intricate schematics, technical diagrams, and process-specific content with high precision and contextual relevance.",
+    "reference_answer": "The two strategies are converting images into descriptive text and aligning text and image data in a shared embedding space with multi-modal embeddings such as CLIP or Jina-CLIP. Manufacturing still needs tailored solutions because it involves intricate schematics, technical diagrams, and process-specific content that require high precision and contextual relevance.",
+    "metadata": {
+      "title": "ManuRAG: multi-modal retrieval augmented generation for manufacturing question answering",
+      "file_name": "ManuRAG.pdf"
+    }
+  },
+  {
+    "id": 11,
+    "question": "What major economic data releases are scheduled for this week?",
+    "expected_tool": "fred_releases",
+    "reference_context": "# Macro Releases: 2026-04-06 to 2026-04-10\n\nGenerated: 2026-04-06 04:49 PM ET\n\n| Date | Time (ET) | Release | Tier |\n|------|-----------|---------|------|\n| 2026-04-06 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-06 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-07 | 8:30 AM | Manufacturer's Shipments, Inventories, and Orders | Tier 2 |\n| 2026-04-07 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-07 | 3:00 PM | G.19 Consumer Credit | Tier 3 |\n| 2026-04-08 | 8:30 AM | Chicago Fed National Financial Conditions Index | Tier 3 |\n| 2026-04-08 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-09 | 8:30 AM | Gross Domestic Product | Tier 1 |\n| 2026-04-09 | 8:30 AM | Personal Income and Outlays | Tier 1 |\n| 2026-04-09 | 8:30 AM | Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-09 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-10 | 8:30 AM | Consumer Price Index | Tier 1 |\n| 2026-04-10 | 8:30 AM | Manufacturer's Shipments, Inventories, and Orders | Tier 2 |\n| 2026-04-10 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-10 | 2:00 PM | FOMC Press Release | Tier 1 |\n\nSaved to /home/lenovoai/kelvin/part3/dataset/macro_releases_2026-04-06_to_2026-04-10.md",
+    "reference_answer": "This week's major releases include: State Unemployment Insurance Weekly Claims Report (2026-04-06 8:30 AM), FOMC Press Release (2026-04-06 2:00 PM), Manufacturer's Shipments, Inventories, and Orders (2026-04-07 8:30 AM), FOMC Press Release (2026-04-07 2:00 PM), G.19 Consumer Credit (2026-04-07 3:00 PM), Chicago Fed National Financial Conditions Index (2026-04-08 8:30 AM), FOMC Press Release (2026-04-08 2:00 PM), Gross Domestic Product (2026-04-09 8:30 AM). Key Tier 1 releases are FOMC Press Release (2026-04-06 2:00 PM), FOMC Press Release (2026-04-07 2:00 PM), FOMC Press Release (2026-04-08 2:00 PM), Gross Domestic Product (2026-04-09 8:30 AM), Personal Income and Outlays (2026-04-09 8:30 AM), FOMC Press Release (2026-04-09 2:00 PM), Consumer Price Index (2026-04-10 8:30 AM), FOMC Press Release (2026-04-10 2:00 PM).",
+    "metadata": {}
+  },
+  {
+    "id": 12,
+    "question": "What macroeconomic reports are coming out next week?",
+    "expected_tool": "fred_releases",
+    "reference_context": "# Macro Releases: 2026-04-13 to 2026-04-17\n\nGenerated: 2026-04-06 04:49 PM ET\n\n| Date | Time (ET) | Release | Tier |\n|------|-----------|---------|------|\n| 2026-04-13 | 10:00 AM | Existing Home Sales | Tier 2 |\n| 2026-04-13 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-14 | 8:30 AM | Producer Price Index | Tier 2 |\n| 2026-04-14 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-15 | 8:30 AM | Chicago Fed National Financial Conditions Index | Tier 3 |\n| 2026-04-15 | 8:30 AM | Empire State Manufacturing Survey | Tier 3 |\n| 2026-04-15 | 8:30 AM | U.S. Import and Export Price Indexes | Tier 3 |\n| 2026-04-15 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-16 | 8:30 AM | Business Leaders Survey | Tier 3 |\n| 2026-04-16 | 8:30 AM | Manufacturing Business Outlook Survey | Tier 3 |\n| 2026-04-16 | 8:30 AM | Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-16 | 9:15 AM | G.17 Industrial Production and Capacity Utilization | Tier 3 |\n| 2026-04-16 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-17 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-17 | 2:00 PM | FOMC Press Release | Tier 1 |\n\nSaved to /home/lenovoai/kelvin/part3/dataset/macro_releases_2026-04-13_to_2026-04-17.md",
+    "reference_answer": "Next week's scheduled releases include: Existing Home Sales (2026-04-13 10:00 AM), FOMC Press Release (2026-04-13 2:00 PM), Producer Price Index (2026-04-14 8:30 AM), FOMC Press Release (2026-04-14 2:00 PM), Chicago Fed National Financial Conditions Index (2026-04-15 8:30 AM), Empire State Manufacturing Survey (2026-04-15 8:30 AM), U.S. Import and Export Price Indexes (2026-04-15 8:30 AM), FOMC Press Release (2026-04-15 2:00 PM). Notable Tier 1 events are FOMC Press Release (2026-04-13 2:00 PM), FOMC Press Release (2026-04-14 2:00 PM), FOMC Press Release (2026-04-15 2:00 PM), FOMC Press Release (2026-04-16 2:00 PM), FOMC Press Release (2026-04-17 2:00 PM).",
+    "metadata": {}
+  },
+  {
+    "id": 13,
+    "question": "Are there any Tier 1 economic releases remaining this week?",
+    "expected_tool": "fred_releases",
+    "reference_context": "# Macro Releases: 2026-04-06 to 2026-04-10\n\nGenerated: 2026-04-06 04:49 PM ET\n\n| Date | Time (ET) | Release | Tier |\n|------|-----------|---------|------|\n| 2026-04-06 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-06 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-07 | 8:30 AM | Manufacturer's Shipments, Inventories, and Orders | Tier 2 |\n| 2026-04-07 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-07 | 3:00 PM | G.19 Consumer Credit | Tier 3 |\n| 2026-04-08 | 8:30 AM | Chicago Fed National Financial Conditions Index | Tier 3 |\n| 2026-04-08 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-09 | 8:30 AM | Gross Domestic Product | Tier 1 |\n| 2026-04-09 | 8:30 AM | Personal Income and Outlays | Tier 1 |\n| 2026-04-09 | 8:30 AM | Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-09 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-10 | 8:30 AM | Consumer Price Index | Tier 1 |\n| 2026-04-10 | 8:30 AM | Manufacturer's Shipments, Inventories, and Orders | Tier 2 |\n| 2026-04-10 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-10 | 2:00 PM | FOMC Press Release | Tier 1 |\n\nSaved to /home/lenovoai/kelvin/part3/dataset/macro_releases_2026-04-06_to_2026-04-10.md",
+    "reference_answer": "Yes, this week's Tier 1 releases are: FOMC Press Release (2026-04-06 2:00 PM), FOMC Press Release (2026-04-07 2:00 PM), FOMC Press Release (2026-04-08 2:00 PM), Gross Domestic Product (2026-04-09 8:30 AM), Personal Income and Outlays (2026-04-09 8:30 AM), FOMC Press Release (2026-04-09 2:00 PM), Consumer Price Index (2026-04-10 8:30 AM), FOMC Press Release (2026-04-10 2:00 PM).",
+    "metadata": {}
+  },
+  {
+    "id": 14,
+    "question": "Which Federal Reserve or employment reports are due next week?",
+    "expected_tool": "fred_releases",
+    "reference_context": "# Macro Releases: 2026-04-13 to 2026-04-17\n\nGenerated: 2026-04-06 04:49 PM ET\n\n| Date | Time (ET) | Release | Tier |\n|------|-----------|---------|------|\n| 2026-04-13 | 10:00 AM | Existing Home Sales | Tier 2 |\n| 2026-04-13 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-14 | 8:30 AM | Producer Price Index | Tier 2 |\n| 2026-04-14 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-15 | 8:30 AM | Chicago Fed National Financial Conditions Index | Tier 3 |\n| 2026-04-15 | 8:30 AM | Empire State Manufacturing Survey | Tier 3 |\n| 2026-04-15 | 8:30 AM | U.S. Import and Export Price Indexes | Tier 3 |\n| 2026-04-15 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-16 | 8:30 AM | Business Leaders Survey | Tier 3 |\n| 2026-04-16 | 8:30 AM | Manufacturing Business Outlook Survey | Tier 3 |\n| 2026-04-16 | 8:30 AM | Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-16 | 9:15 AM | G.17 Industrial Production and Capacity Utilization | Tier 3 |\n| 2026-04-16 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-17 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-17 | 2:00 PM | FOMC Press Release | Tier 1 |\n\nSaved to /home/lenovoai/kelvin/part3/dataset/macro_releases_2026-04-13_to_2026-04-17.md",
+    "reference_answer": "Next week's Fed and employment-related releases include: FOMC Press Release (2026-04-13 2:00 PM), FOMC Press Release (2026-04-14 2:00 PM), FOMC Press Release (2026-04-15 2:00 PM), Unemployment Insurance Weekly Claims Report (2026-04-16 8:30 AM), FOMC Press Release (2026-04-16 2:00 PM), State Unemployment Insurance Weekly Claims Report (2026-04-17 8:30 AM), FOMC Press Release (2026-04-17 2:00 PM).",
+    "metadata": {}
+  },
+  {
+    "id": 15,
+    "question": "What inflation or GDP data is being released this week?",
+    "expected_tool": "fred_releases",
+    "reference_context": "# Macro Releases: 2026-04-06 to 2026-04-10\n\nGenerated: 2026-04-06 04:49 PM ET\n\n| Date | Time (ET) | Release | Tier |\n|------|-----------|---------|------|\n| 2026-04-06 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-06 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-07 | 8:30 AM | Manufacturer's Shipments, Inventories, and Orders | Tier 2 |\n| 2026-04-07 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-07 | 3:00 PM | G.19 Consumer Credit | Tier 3 |\n| 2026-04-08 | 8:30 AM | Chicago Fed National Financial Conditions Index | Tier 3 |\n| 2026-04-08 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-09 | 8:30 AM | Gross Domestic Product | Tier 1 |\n| 2026-04-09 | 8:30 AM | Personal Income and Outlays | Tier 1 |\n| 2026-04-09 | 8:30 AM | Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-09 | 2:00 PM | FOMC Press Release | Tier 1 |\n| 2026-04-10 | 8:30 AM | Consumer Price Index | Tier 1 |\n| 2026-04-10 | 8:30 AM | Manufacturer's Shipments, Inventories, and Orders | Tier 2 |\n| 2026-04-10 | 8:30 AM | State Unemployment Insurance Weekly Claims Report | Tier 2 |\n| 2026-04-10 | 2:00 PM | FOMC Press Release | Tier 1 |\n\nSaved to /home/lenovoai/kelvin/part3/dataset/macro_releases_2026-04-06_to_2026-04-10.md",
+    "reference_answer": "This week's inflation and GDP releases include: Gross Domestic Product (2026-04-09 8:30 AM), Personal Income and Outlays (2026-04-09 8:30 AM), Consumer Price Index (2026-04-10 8:30 AM).",
+    "metadata": {}
+  },
+  {
+    "id": 16,
+    "question": "What was the Federal Reserve's most recent interest rate decision?",
+    "expected_tool": "web_search",
+    "reference_context": "Summary: The latest Federal Reserve interest rate decision was kept unchanged at 3.50%–3.75% in March 2026. The next decision is scheduled for April 29, 2026. The Federal Reserve updates interest rates regularly.\n\nSources:\n\n1. When is the next Fed interest rate decision?\n   URL: https://equalsmoney.com/economic-calendar/events/fed-interest-rate-decision\n   The next Federal Reserve (Fed) interest rate decision is due on Wednesday, April 29, 2026, at 18:00 GMT. Add to calendar.\n\n2. Federal Reserve\n   URL: https://www.cnbc.com/federal-reserve/\n   Federal Reserve · The Fed issues its latest interest rate decision Wednesday. Here's what to expect. Tue, Mar 17th 2026. Trump-Xi China summit may be delayed if\n\n3. United States Federal Reserve Interest Rate Decision\n   URL: https://www.investing.com/economic-calendar/interest-rate-decision-168\n   Get the Fed Interest Rate Decision results in real time as they're announced and see the immediate global market impact.\n\n4. Federal Funds Rate History 1990 to 2026\n   URL: https://www.forbes.com/advisor/investing/fed-funds-rate-history/\n   Fed Rate Cuts 2024-2026: Still Taming Inflation. The Federal Reserve kept its benchmark interest rate unchanged at 3.50%–3.75% following the March FOMC meeting.\n\n5. Federal Reserve Board - Open Market Operations\n   URL: https://www.federalreserve.gov/monetarypolicy/openmarket.htm\n   Interest Rates. Selected Interest Rates - H.15. Micro Data Reference Manual ... Last Update: December 12, 2025. Board of Governors of the Federal Reserve",
+    "reference_answer": "The latest Federal Reserve interest rate decision was kept unchanged at 3.50%–3.75% in March 2026. The next decision is scheduled for April 29, 2026. The Federal Reserve updates interest rates regularly.",
+    "metadata": {}
+  },
+  {
+    "id": 17,
+    "question": "How is the S&P 500 performing today?",
+    "expected_tool": "web_search",
+    "reference_context": "Summary: The S&P 500 stock market index is currently at 6,611.83, up by 29.14 points or 0.44% today. This rise follows a year-to-date decline of 3.69%.\n\nSources:\n\n1. S&P 500 Index Overview - SPX - MarketWatch\n   URL: https://www.marketwatch.com/investing/index/spx?gaa_at=eafs&gaa_n=AWEtsqfgn1wRZKzrE74zdZJkvz89xykbe8VZBL7B_U3UCK-rlHw3xf8ur7P_&gaa_ts=69d41fd2&gaa_sig=4gV_KNANWyiOrtOGkLmSPvhaBVofD26J2_osBY5poq1y8fLmeI0vMqcQmaU1_8uG0zBxCAG0g3PBMwtNrrFcGQ%3D%3D\n   Performance ; 5 Day. 3.51% ; 1 Month. -2.19% ; 3 Month. -3.88% ; YTD. -3.69% ; 1 Year. 29.93%\n\n2. S&P 500 Index (SPX) - Investing.com\n   URL: https://www.investing.com/indices/us-spx-500\n   How Is the S&P 500 Doing Today? The S&P 500 live stock price is 6,608.29. What is the S&P 500 Ticker Symbol?\n\n3. S&P 500 Index Chart — SPX Quote - TradingView\n   URL: https://www.tradingview.com/symbols/SPX/\n   The current value of S&P 500 Index is 6,602.28 USD — it has risen by 0.14% in the past 24 hours. Track the index more closely on the S&P 500 Index chart.\n\n4. S&P 500 (^GSPC) Charts, Data & News - Yahoo Finance\n   URL: https://finance.yahoo.com/quote/%5EGSPC/\n   SNP - Free Realtime Quote • USD. S&P 500 (^GSPC). 6,607.27 +24.58 (+0.37%). As of 3:06:16 PM EDT. Market Open. Chart Range Bar. 1D. 5D. 3.74%. 1M. -1.97%.\n\n5. S&P 500 INDEX TODAY | INX LIVE TICKER - Markets Insider\n   URL: https://markets.businessinsider.com/index/s&p_500\n   Realtime Prices for S&P 500 Stocks ; Akamai, 118.00. 115.38 ; Albemarle, 178.09. 172.58 ; Alexandria Real Estate Equities, 43.23. 42.94 ; Align Technology, 170.60.",
+    "reference_answer": "The S&P 500 stock market index is currently at 6,611.83, up by 29.14 points or 0.44% today. This rise follows a year-to-date decline of 3.69%.",
+    "metadata": {}
+  },
+  {
+    "id": 18,
+    "question": "What are some recent breakthroughs in artificial intelligence?",
+    "expected_tool": "web_search",
+    "reference_context": "Summary: Recent AI breakthroughs include advanced multimodal systems and new generations of custom AI chips. Quantum computing scaling up is also a significant development. AI is aiding in medical breakthroughs like Alzheimer's and cancer treatment.\n\nSources:\n\n1. The Latest Breakthroughs in AI Research & Development - Skillio\n   URL: https://helloskillio.com/the-latest-breakthroughs-in-ai-research-and-development/\n   A massive breakthrough in AI research is the rise of multimodal systems that integrate multiple types of data. Tools like OpenAI's Sora,\n\n2. Latest AI News and AI Breakthroughs that Matter Most: 2026\n   URL: https://www.crescendo.ai/news/latest-ai-news-and-updates\n   Summary: Meta revealed four new generations of custom AI chips, the MTIA 300, 400, 450, and 500, to be deployed across its data centers by end\n\n3. Artificial Intelligence News - ScienceDaily\n   URL: https://www.sciencedaily.com/news/computers_math/artificial_intelligence/\n   Feb. 2, 2026 — A new light-based breakthrough could help quantum computers finally scale up. Stanford researchers created miniature optical cavities that\n\n4. Nine Breakthroughs Made Possible by AI - UC San Diego Today\n   URL: https://today.ucsd.edu/story/nine-breakthroughs-made-possible-by-ai\n   AI Helps Uncover Alzheimer's Trigger · AI Targets Tuberculosis · AI Peers Into the Heart · AI Sharpens Breast Cancer Treatment Plans · AI in Motion.\n\n5. AI News | Latest News | Insights Powering AI-Driven Business Growth\n   URL: https://www.artificialintelligence-news.com/\n   Thailand becomes one of the first in Asia to get the Sora app · Malaysia launches Ryt Bank, its first AI-powered bank · Google's Veo 3 AI video creation tools are",
+    "reference_answer": "Recent AI breakthroughs include advanced multimodal systems and new generations of custom AI chips. Quantum computing scaling up is also a significant development. AI is aiding in medical breakthroughs like Alzheimer's and cancer treatment.",
+    "metadata": {}
+  },
+  {
+    "id": 19,
+    "question": "What is happening with global oil prices right now?",
+    "expected_tool": "web_search",
+    "reference_context": "Summary: Global oil prices are rising due to tensions in the Strait of Hormuz and geopolitical conflicts. WTI and Brent are the main benchmarks. OPEC+ is preparing for potential supply disruptions.\n\nSources:\n\n1. Oil News and Forecast - FXStreet\n   URL: https://www.fxstreet.com/markets/commodities/energy/oil\n   ## About Oil. There are two main benchmarks for pricing crude Oil: West Texas Intermediate (WTI) from the United States (US) and Brent from the United Kingdom (UK). Supply and demand are the key drivers of WTI Oil price. The value of the US Dollar influences the price of WTI Crude Oil since Oil is p...\n\n2. Crude Oil Prices Today | OilPrice.com\n   URL: https://oilprice.com/\n   [U.S. Oil Premiums Hit Record High as World Scrambles for Crude](https://oilprice.com/Latest-Energy-News/World-News/US-Oil-Premiums-Hit-Record-High-as-World-Scrambles-for-Crude.html). High prices and shortages are triggering demand destruction, particularly in Asia and Europe.](https://oilprice.com/...\n\n3. Oil News Today | OilPrice.com\n   URL: https://oilprice.com/Latest-Energy-News/World-News/\n   [Trump Says US Could ‘Take the Oil’ in Hormuz Push](https://oilprice.com/Latest-Energy-News/World-News/Trump-Says-US-Could-Take-the-Oil-in-Hormuz-Push.html). [## Trump Says US Could ‘Take the Oil’ in Hormuz Push](https://oilprice.com/Latest-Energy-News/World-News/Trump-Says-US-Could-Take-the-Oil-in-...\n\n4. Crude Oil Prices Today and Oil Market News\n   URL: https://www.cnbc.com/oil/\n   [Oil prices rise as Trump warns Iran to open Strait of Hormuz by Tuesday or face 'hell'](https://www.cnbc.com/2026/04/05/crude-oil-prices-iran-war-strait-hormuz.html). [watch now](https://www.cnbc.com/video/2026/04/02/oil-prices-climbs-double-digits-after-pres-trumps-primetime-speech.html). Trump's ...\n\n5. Short-Term Energy Outlook\n   URL: https://www.eia.gov/outlooks/steo/\n   *   [](https://twitter.com/EIAgov)[](https://www.eia.gov/outlooks/steo/). *   [Market Prices and Uncertainty Report](https://www.eia.gov/finance/data.php \"Market Prices and Uncertainty Report\"). *   [Energy & Financial Markets: What Drives Crude Oil Prices?](https://www.eia.gov/finance/markets/crude...",
+    "reference_answer": "Global oil prices are rising due to tensions in the Strait of Hormuz and geopolitical conflicts. WTI and Brent are the main benchmarks. OPEC+ is preparing for potential supply disruptions.",
+    "metadata": {}
+  },
+  {
+    "id": 20,
+    "question": "What is the current unemployment rate in the United States?",
+    "expected_tool": "web_search",
+    "reference_context": "Summary: The latest unemployment rate in the United States is 4.3% as of March 2026. This is a slight decrease from February's rate of 4.4%. This figure is below the long-term average.\n\nSources:\n\n1. United States Unemployment Rate | Moody's Analytics\n   URL: https://www.economy.com/united-states/unemployment-rate\n   United States: Labor ; Unemployment, Mar 2026, 7,239 ; Unemployment Rate, Mar 2026, 4.3 ; Wage & Salaries, 2025 Q4, 13,204,209 ; Primary Industries Employment, Sep\n\n2. United States Unemployment Rate\n   URL: https://tradingeconomics.com/united-states/unemployment-rate\n   Unemployment Rate in the United States decreased to 4.30 percent in March from 4.40 percent in February of 2026. Unemployment Rate in the United States averaged\n\n3. US Unemployment Rate (Monthly) - United States\n   URL: https://ycharts.com/indicators/us_unemployment_rate\n   US Unemployment Rate is at 4.30%, compared to 4.40% last month and 4.20% last year. This is lower than the long term average of 5.66%. The US Unemployment\n\n4. Current Unemployment Rate and Other Jobs Report Findings\n   URL: https://www.nerdwallet.com/finance/learn/jobs-report-unemployment-rate\n   The current unemployment rate is 4.3% for March, a 0.1 percentage point decrease from February (4.4%). The unemployment rate has risen since\n\n5. What is the unemployment rate in the US right now?\n   URL: https://usafacts.org/answers/what-is-the-unemployment-rate/country/united-states/\n   California, New Jersey, and Delaware had the highest unemployment rates, as of December 2025. California and New Jersey were tied for highest at 5.5%.",
+    "reference_answer": "The latest unemployment rate in the United States is 4.3% as of March 2026. This is a slight decrease from February's rate of 4.4%. This figure is below the long-term average.",
+    "metadata": {}
+  }
+]

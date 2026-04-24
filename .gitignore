@@ -1,0 +1,36 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# model weights / OpenVINO IRs (auto-downloaded, very large)
+models/
+
+# vector store (regeneratable from documents/ via langGraph/vectorDB.py)
+db/chroma/
+
+# auto-extracted figures from PDF parsing (regeneratable from documents/)
+figures/
+langGraph/figures/
+
+
+# benchmark CSV outputs (regenerable; remove next line if you want to track them)
+dataset/*.csv
+
+# runtime state
+last_seen_trump_post.txt
+
+# Python bytecode / venv noise
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# Local Claude Code settings
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db

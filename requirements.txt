@@ -1,0 +1,44 @@
+# Core
+python-dotenv>=1.0.0
+requests
+torch
+transformers
+accelerate
+huggingface_hub
+
+# LangChain / LangGraph
+langchain
+langchain-community
+langchain-core
+langchain-text-splitters
+langchain-huggingface
+langchain-chroma
+langgraph
+
+# Vector DB backends
+chromadb
+faiss-cpu
+redis
+
+# Embeddings
+sentence-transformers
+
+# Document parsing (multimodal)
+unstructured[pdf]
+pdf2image
+pdfminer.six
+pytesseract
+unstructured-inference
+pillow
+
+# Web search
+tavily-python
+
+# MCP server
+mcp>=1.0.0
+
+# Hardware profiling
+psutil
+
+# ML extras (used by retrieval_router TF-IDF fallback)
+scikit-learn

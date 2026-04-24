@@ -1,0 +1,222 @@
+[
+  {
+    "id": 1,
+    "question": "ACE says prior context adaptation methods often suffer from two specific failure modes. What are they, and what modular process does ACE use to avoid them?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models",
+        "file_name": "Agentic Context Engineering.pdf"
+      },
+      "context": "Large language model (LLM) applications such as agents and domain-specific reasoning increasingly rely on context adaptation-modifying inputs with instructions, strategies, or evidence, rather than weight updates. Prior approaches improve usability but often suffer from brevity bias, which drops domain insights for concise summaries, and from context collapse, where iterative rewriting erodes details over time. Building on the adaptive memory introduced by Dynamic Cheatsheet, we introduce ACE (Agentic Context Engineering), a framework that treats contexts as evolving playbooks that accumulate, refine, and organize strategies through a modular process of generation, reflection, and curation. ACE prevents collapse with structured, incremental updates that preserve detailed knowledge and scale with long-context models."
+    },
+    "answer_reference": {
+      "answer": "The two failure modes are brevity bias and context collapse. ACE addresses them by treating contexts as evolving playbooks and updating them through generation, reflection, and curation with structured, incremental changes."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 2,
+    "question": "How does the paper define context adaptation, and which representative methods does it cite as natural-language feedback approaches?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "Agentic Context Engineering: Evolving Contexts for Self-Improving Language Models",
+        "file_name": "Agentic Context Engineering.pdf"
+      },
+      "context": "Context adaptation (or context engineering) refers to methods that improve model behavior by constructing or modifying inputs to an LLM, rather than altering its weights. The current state of the art leverages natural language feedback [4, 40, 54]. In this paradigm, a language model inspects the current context along with signals such as execution traces, reasoning steps, or validation results, and generates natural language feedback on how the context should be revised. This feedback is then incorporated into the context, enabling iterative adaptation. Representative methods include Reflexion [40], which reflects on failures to improve agent planning; TextGrad [54], which optimizes prompts via gradient-like textual feedback; GEPA [4], which refines prompts iteratively based on execution traces and achieves strong performance, even surpassing reinforcement learning approaches in some settings; and Dynamic Cheatsheet [41], which constructs an external memory that accumulates strategies and lessons from past successes and failures during inference."
+    },
+    "answer_reference": {
+      "answer": "The paper defines context adaptation as improving model behavior by constructing or modifying the LLM's inputs instead of changing its weights. The representative natural-language feedback methods it names are Reflexion, TextGrad, GEPA, and Dynamic Cheatsheet."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 3,
+    "question": "What core architectural change does the Transformer make relative to earlier sequence transduction models, and what training and quality gains does the abstract report?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "Attention Is All You Need",
+        "file_name": "Attention Is All You Need.pdf"
+      },
+      "context": "The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English- to-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature."
+    },
+    "answer_reference": {
+      "answer": "The Transformer replaces recurrent and convolutional sequence transduction architecture with attention mechanisms alone. The abstract reports that it is more parallelizable, requires much less training time, reaches 28.4 BLEU on WMT 2014 English-to-German, and reaches 41.8 BLEU on WMT 2014 English-to-French after 3.5 days on eight GPUs."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 4,
+    "question": "What computational advantage does the Transformer claim for relating distant positions, and what drawback does multi-head attention help counteract?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "Attention Is All You Need",
+        "file_name": "Attention Is All You Need.pdf"
+      },
+      "context": "The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU [16], ByteNet [18] and ConvS2S [9], all of which use convolutional neural networks as basic building block, computing hidden representations in parallel for all input and output positions. In these models, the number of operations required to relate signals from two arbitrary input or output positions grows in the distance between positions, linearly for ConvS2S and logarithmically for ByteNet. This makes it more difficult to learn dependencies between distant positions [12]. In the Transformer this is reduced to a constant number of operations, albeit at the cost of reduced effective resolution due to averaging attention-weighted positions, an effect we counteract with Multi-Head Attention as described in section 3.2."
+    },
+    "answer_reference": {
+      "answer": "The Transformer reduces the number of operations needed to relate arbitrary positions to a constant, instead of the distance-dependent costs in ConvS2S and ByteNet. The tradeoff is reduced effective resolution from averaging attention-weighted positions, and multi-head attention helps counteract that."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 5,
+    "question": "According to the paper, what two decisions define dynamic RAG, and why is single-round retrieval not enough for complex multi-step or long-form tasks?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "DRAGIN: Dynamic Retrieval Augmented Generation based on the Information Needs of Large Language Models",
+        "file_name": "Dynamic RAG by TsinguaU.pdf"
+      },
+      "context": "Retrieval-Augmented Generation (RAG) enhances LLMs by retrieving and incorporating relevant information from external databases into the LLMs' inputs. Traditional methods of RAG typically rely on single-round retrieval, using the LLM's initial input to retrieve relevant information from external corpora. While this method is effective for straightforward tasks, it tends to fall short for complex multi-step tasks and long-form generation tasks. In contrast, dynamic RAG performs multiple times of retrieval during the generation process of LLMs. It includes two steps: identifying the optimal moment to activate the retrieval module (deciding when to retrieve), and crafting the appropriate query once retrieval is triggered (determining what to retrieve)."
+    },
+    "answer_reference": {
+      "answer": "Dynamic RAG is defined by deciding when to retrieve and deciding what to retrieve. Single-round retrieval is not enough because it only uses the initial input, which works for simple cases but falls short on complex multi-step tasks and long-form generation."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 6,
+    "question": "What two shortcomings of existing dynamic RAG methods does DRAGIN identify, and how does the paper frame DRAGIN's solution?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "DRAGIN: Dynamic Retrieval Augmented Generation based on the Information Needs of Large Language Models",
+        "file_name": "Dynamic RAG by TsinguaU.pdf"
+      },
+      "context": "There are two key elements of this paradigm: identifying the optimal moment to activate the retrieval module (deciding when to retrieve) and crafting the appropriate query once retrieval is triggered (determining what to retrieve). However, current dynamic RAG methods fall short in both aspects. Firstly, the strategies for deciding when to retrieve often rely on static rules. Moreover, the strategies for deciding what to retrieve typically limit themselves to the LLM's most recent sentence or the last few tokens, while the LLM's information needs may span across the entire context. To overcome these limitations, we introduce a new framework, DRAGIN, i.e., Dynamic Retrieval Augmented Generation based on the Information Needs of LLMs. Our framework is specifically designed to make decisions on when and what to retrieve based on the LLM's information needs during the text generation process."
+    },
+    "answer_reference": {
+      "answer": "The two shortcomings are that current methods use static rules for when to retrieve and they narrow what to retrieve to the most recent sentence or last few tokens. DRAGIN's solution is to make both decisions based on the LLM's information needs across the generation process."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 7,
+    "question": "How is HOTPOTQA collected, and what two additions does the paper highlight beyond simply asking multi-document questions?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "HOTPOTQA: A Dataset for Diverse, Explainable Multi-hop Question Answering",
+        "file_name": "HOTPOTQA ADataset for Diverse.pdf"
+      },
+      "context": "We present HOTPOTQA, a large-scale dataset that satisfies these desiderata. HOTPOTQA is collected by crowdsourcing based on Wikipedia articles, where crowd workers are shown multiple supporting context documents and asked explicitly to come up with questions requiring reasoning about all of the documents. This ensures it covers multi-hop questions that are more natural, and are not designed with any pre-existing knowledge base schema in mind. Moreover, we also ask the crowd workers to provide the supporting facts they use to answer the question, which we also provide as part of the dataset. Finally, we also collected a novel type of questions-comparison questions-as part of HOTPOTQA, in which we require systems to compare two entities on some shared properties to test their understanding of both language and common concepts such as numerical magnitude."
+    },
+    "answer_reference": {
+      "answer": "HOTPOTQA is collected by crowdsourcing over Wikipedia with multiple supporting documents shown to the worker. Beyond multi-document questions, the paper highlights sentence-level supporting facts and comparison questions that require systems to compare entities on shared properties."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 8,
+    "question": "What reasoning types does the paper say appear in HOTPOTQA, and what do comparison questions require from a system?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "HOTPOTQA: A Dataset for Diverse, Explainable Multi-hop Question Answering",
+        "file_name": "HOTPOTQA ADataset for Diverse.pdf"
+      },
+      "context": "Most of the questions require at least one supporting fact from each paragraph to answer. A majority of sampled questions (42%) require chain reasoning (Type I in the table), where the reader must first identify a bridge entity before the second hop can be answered by filling in the bridge. In some questions (Type III), the entity in question shares certain properties with a bridge entity, and we can infer its properties through the bridge entity. Another type of question involves locating the answer entity by satisfying multiple properties simultaneously (Type II). Questions comparing two entities (Comparison) also require the system to understand the properties in question about the two entities, and sometimes require arithmetic."
+    },
+    "answer_reference": {
+      "answer": "The paper says HOTPOTQA includes chain reasoning with a bridge entity, inference through a bridge entity, and questions that locate an answer by satisfying multiple properties simultaneously. Comparison questions require the system to understand the properties of both entities and sometimes perform arithmetic."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 9,
+    "question": "What kinds of data make manufacturing QA difficult according to the paper, and why does that make information retrieval harder?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "ManuRAG: multi-modal retrieval augmented generation for manufacturing question answering",
+        "file_name": "ManuRAG.pdf"
+      },
+      "context": "The complexity of manufacturing data presents a unique challenge for effective information retrieval and QA. Manufacturing documents span a wide array of data types, including text, images, formulas, Computer-aided design (CAD) models, tables, sensor data, and videos. Each format holds critical information necessary for understanding and optimizing manufacturing processes, designs, and operational insights. For example, text data may contain operational guidelines, maintenance logs, or compliance records that require natural language processing for efficient retrieval. Images, like defect photos or assembly line snapshots, demand computer vision techniques to identify patterns or detect quality issues. Formulas and equations, embedded in documentation, need precise recognition and interpretation to enable accurate replication and troubleshooting of complex processes."
+    },
+    "answer_reference": {
+      "answer": "The paper says manufacturing QA has to deal with text, images, formulas, CAD models, tables, sensor data, and videos. Retrieval is harder because each format carries important process information and needs different processing methods, such as NLP for text, computer vision for images, and precise interpretation for formulas."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  },
+  {
+    "id": 10,
+    "question": "What two multi-modal RAG strategies does the paper describe, and why does manufacturing still require tailored solutions even with those strategies?",
+    "tool": "retrieve",
+    "context_reference": {
+      "metadata": {
+        "title": "ManuRAG: multi-modal retrieval augmented generation for manufacturing question answering",
+        "file_name": "ManuRAG.pdf"
+      },
+      "context": "Standard RAG operates solely on text, multi-modal RAG fuses image and document embeddings, typically following one of two strategies: (1) converting images into descriptive text for seamless integration into text-based workflows, and (2) aligning text and image data in a shared embedding space using multi-modal embeddings like Contrastive Language-Image Pre-Training (CLIP) and Jina-CLIP. These methods enable models to retrieve and reason across modalities, enhancing their performance on tasks that require both visual and textual comprehension. While multi-modal RAG has shown applications in domains such as healthcare, its potential remains underexplored in manufacturing. The manufacturing domain demands tailored solutions capable of handling intricate schematics, technical diagrams, and process-specific content with high precision and contextual relevance."
+    },
+    "answer_reference": {
+      "answer": "The two strategies are converting images into descriptive text and aligning text and image data in a shared embedding space with multi-modal embeddings such as CLIP or Jina-CLIP. Manufacturing still needs tailored solutions because it involves intricate schematics, technical diagrams, and process-specific content that require high precision and contextual relevance."
+    },
+    "round1_status": null,
+    "gold_missing_information": null,
+    "gold_followup_query": null,
+    "gold_useful_information": null,
+    "round2_status": null,
+    "question_type": "factual",
+    "difficulty": "medium"
+  }
+]
