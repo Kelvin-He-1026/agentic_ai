@@ -15,7 +15,7 @@ langGraph/figures/
 
 
 # benchmark CSV outputs (regenerable; remove next line if you want to track them)
-dataset/*.csv
+dataset/
 
 # runtime state
 last_seen_trump_post.txt
@@ -29,7 +29,7 @@ __pycache__/
 venv/
 
 # Local Claude Code settings
-.claude/settings.local.json
+.claude
 
 # OS
 .DS_Store
