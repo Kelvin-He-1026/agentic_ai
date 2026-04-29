@@ -447,12 +447,20 @@ class ReActAgent:
         except (StopIteration, AttributeError):
             self.judge_input_device = "cpu"
 
-    def _generate(self, messages: list[dict]) -> str:
-        """Run a single generation turn on the router model."""
+    def _generate(self, messages: list[dict]) -> tuple[str, dict]:
+        """Run a single generation turn on the router model.
+
+        Returns (text, stats) where stats has:
+            prompt_tokens   — input length in tokens
+            output_tokens   — number of newly generated tokens
+            thinking_tokens — tokens inside <think>...</think>, if any
+            truncated       — True if output_tokens hit max_new_tokens
+        """
         text = self.tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True,
         )
         inputs = self.tokenizer(text, return_tensors="pt").to(self.router_input_device)
+        prompt_tokens = int(inputs["input_ids"].shape[1])
 
         with torch.no_grad():
             output = self.model.generate(
@@ -464,9 +472,25 @@ class ReActAgent:
                 repetition_penalty=1.1,
             )
 
-        # Decode only the new tokens
-        new_tokens = output[0][inputs["input_ids"].shape[1]:]
-        return self.tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
+        new_token_ids = output[0][prompt_tokens:]
+        output_tokens = int(new_token_ids.shape[0])
+        truncated = output_tokens >= self.max_new_tokens
+
+        # Count <think>...</think> content tokens, if present
+        raw_with_specials = self.tokenizer.decode(new_token_ids, skip_special_tokens=False)
+        think_blocks = re.findall(r"<think>(.*?)</think>", raw_with_specials, re.DOTALL)
+        thinking_tokens = sum(
+            len(self.tokenizer.encode(b, add_special_tokens=False)) for b in think_blocks
+        )
+
+        decoded = self.tokenizer.decode(new_token_ids, skip_special_tokens=True).strip()
+        stats = {
+            "prompt_tokens": prompt_tokens,
+            "output_tokens": output_tokens,
+            "thinking_tokens": thinking_tokens,
+            "truncated": truncated,
+        }
+        return decoded, stats
 
     def _parse_action(self, text: str) -> tuple[str | None, str | None]:
         """Extract Action and Action Input from model output."""
@@ -486,13 +510,17 @@ class ReActAgent:
     # ------------------------------------------------------------------
     # Judge helpers
     # ------------------------------------------------------------------
-    def _judge_generate(self, messages: list[dict], max_new_tokens: int = 128) -> str:
-        """Run a single generation turn on the judge model."""
+    def _judge_generate(self, messages: list[dict], max_new_tokens: int = 128) -> tuple[str, dict]:
+        """Run a single generation turn on the judge model.
+
+        Returns (text, stats) — same stats schema as `_generate`.
+        """
         text = self.judge_tokenizer.apply_chat_template(
             messages, tokenize=False, add_generation_prompt=True,
             enable_thinking=False,
         )
         inputs = self.judge_tokenizer(text, return_tensors="pt").to(self.judge_input_device)
+        prompt_tokens = int(inputs["input_ids"].shape[1])
 
         with torch.no_grad():
             output = self.judge_model.generate(
@@ -503,15 +531,33 @@ class ReActAgent:
                 top_p=0.9,
             )
 
-        new_tokens = output[0][inputs["input_ids"].shape[1]:]
-        result = self.judge_tokenizer.decode(new_tokens, skip_special_tokens=True).strip()
-        return re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL).strip()
+        new_token_ids = output[0][prompt_tokens:]
+        output_tokens = int(new_token_ids.shape[0])
+        truncated = output_tokens >= max_new_tokens
 
-    def _judge_sufficiency(self, question: str, observations: list[str]) -> tuple[bool, str]:
+        raw_with_specials = self.judge_tokenizer.decode(new_token_ids, skip_special_tokens=False)
+        think_blocks = re.findall(r"<think>(.*?)</think>", raw_with_specials, re.DOTALL)
+        thinking_tokens = sum(
+            len(self.judge_tokenizer.encode(b, add_special_tokens=False)) for b in think_blocks
+        )
+
+        result = self.judge_tokenizer.decode(new_token_ids, skip_special_tokens=True).strip()
+        result = re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL).strip()
+        stats = {
+            "prompt_tokens": prompt_tokens,
+            "output_tokens": output_tokens,
+            "thinking_tokens": thinking_tokens,
+            "truncated": truncated,
+        }
+        return result, stats
+
+    def _judge_sufficiency(
+        self, question: str, observations: list[str],
+    ) -> tuple[bool, str, dict]:
         """Ask the judge model whether the gathered observations are sufficient
         to answer the question.
 
-        Returns (is_sufficient, raw_judge_response).
+        Returns (is_sufficient, raw_judge_response, judge_stats).
         """
         obs_text = "\n\n".join(
             f"[Observation {i}]\n{obs}" for i, obs in enumerate(observations, 1)
@@ -542,9 +588,9 @@ class ReActAgent:
                 ),
             },
         ]
-        response = self._judge_generate(messages)
+        response, stats = self._judge_generate(messages)
         is_sufficient = "sufficient" in response.lower()
-        return is_sufficient, response
+        return is_sufficient, response, stats
 
     # ------------------------------------------------------------------
     # Main loop
@@ -562,7 +608,7 @@ class ReActAgent:
         for step in range(1, self.max_steps + 1):
             print(f"\n--- Step {step} ---")
 
-            response = self._generate(messages)
+            response, _gen_stats = self._generate(messages)
             print(response)
 
             # Parse action first. The model sometimes includes a hallucinated
@@ -581,7 +627,7 @@ class ReActAgent:
                 observations.append(observation)
 
                 # --- Judge: is the gathered info sufficient? ---
-                sufficient, judge_response = self._judge_sufficiency(
+                sufficient, judge_response, _judge_stats = self._judge_sufficiency(
                     question, observations,
                 )
                 print(f"Judge: {judge_response} -> {'SUFFICIENT' if sufficient else 'CONTINUE'}")
