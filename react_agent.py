@@ -236,6 +236,14 @@ RETRIEVAL_EMBEDDING_MODEL = "BAAI/bge-large-en-v1.5"
 # Pre-loaded retrieval components (singleton)
 # ---------------------------------------------------------------------------
 _retrieval_vectorstore = None
+_embed_gpu_id: int | None = None  # set by ReActAgent.__init__ to pin BGE to a specific GPU
+
+
+def set_embedding_gpu(gpu_id: int | None) -> None:
+    """Pin the retrieval embedding model to a specific CUDA index (e.g., 0).
+    Call before the first tool_retrieve / _get_vectorstore() invocation."""
+    global _embed_gpu_id
+    _embed_gpu_id = gpu_id
 
 
 def _inspect_chroma_collection(chroma_dir: Path, collection_name: str) -> tuple[int | None, int]:
@@ -283,7 +291,12 @@ def _get_vectorstore():
             str(embedding_model) if embedding_model.exists()
             else RETRIEVAL_EMBEDDING_MODEL
         )
-        embedding_device = "cuda" if torch.cuda.is_available() else "cpu"
+        if torch.cuda.is_available():
+            embedding_device = (
+                f"cuda:{_embed_gpu_id}" if _embed_gpu_id is not None else "cuda"
+            )
+        else:
+            embedding_device = "cpu"
         chroma_dir = DB_DIR / "chroma"
 
         dim, count = _inspect_chroma_collection(
@@ -423,14 +436,25 @@ class ReActAgent:
         device: str = "cuda",
         max_steps: int = 5,
         max_new_tokens: int = 2048,
+        router_gpu_ids: list[int] | None = None,
+        judge_gpu_ids: list[int] | None = None,
+        embedding_gpu_id: int | None = None,
     ):
         self.device = device
         self.max_steps = max_steps
         self.max_new_tokens = max_new_tokens
+        self.router_gpu_ids = router_gpu_ids
+        self.judge_gpu_ids = judge_gpu_ids
+
+        # Pin BGE embedding model to a specific GPU. Defaults to the first
+        # router GPU when an explicit override is not provided.
+        if embedding_gpu_id is None and router_gpu_ids:
+            embedding_gpu_id = router_gpu_ids[0]
+        set_embedding_gpu(embedding_gpu_id)
 
         # --- Router model ---
         self.model, self.tokenizer = load_llm(
-            str(router_model_path), device=device,
+            str(router_model_path), device=device, gpu_ids=router_gpu_ids,
         )
         # Determine where to send inputs (OpenVINO models run on CPU)
         try:
@@ -440,7 +464,7 @@ class ReActAgent:
 
         # --- Judge model ---
         self.judge_model, self.judge_tokenizer = load_llm(
-            str(judge_model_path), device=device,
+            str(judge_model_path), device=device, gpu_ids=judge_gpu_ids,
         )
         try:
             self.judge_input_device = next(self.judge_model.parameters()).device
@@ -672,6 +696,14 @@ class ReActAgent:
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
+def _parse_gpu_list(s: str | None) -> list[int] | None:
+    """Parse a comma-separated GPU list (e.g., '0' or '0,1,2') into a list of ints.
+    Returns None for empty/None input (caller falls back to default behavior)."""
+    if s is None or s.strip() == "":
+        return None
+    return [int(x) for x in s.split(",") if x.strip() != ""]
+
+
 def main():
     parser = argparse.ArgumentParser(description="ReAct Agent with Qwen3-8B router + Qwen3-14B judge")
     parser.add_argument("question", nargs="?", default=None,
@@ -686,6 +718,15 @@ def main():
                         help=f"Router model: preset name or path (default: {DEFAULT_ROUTER_MODEL})")
     parser.add_argument("--judge-model", default=DEFAULT_JUDGE_MODEL,
                         help=f"Judge model: preset name or path (default: {DEFAULT_JUDGE_MODEL})")
+    parser.add_argument("--router-gpus", default=None,
+                        help="Comma-separated GPU IDs for the router (e.g. '0' or '0,1'). "
+                             "Default: use --device (cuda spans all visible GPUs).")
+    parser.add_argument("--judge-gpus", default=None,
+                        help="Comma-separated GPU IDs for the judge (e.g. '1' or '2,3'). "
+                             "Default: use --device.")
+    parser.add_argument("--embedding-gpu", type=int, default=None,
+                        help="GPU ID for the BGE retrieval embedding model. "
+                             "Defaults to the first router GPU when --router-gpus is set.")
     args = parser.parse_args()
 
     agent = ReActAgent(
@@ -693,6 +734,9 @@ def main():
         judge_model_path=args.judge_model,
         device=args.device,
         max_steps=args.max_steps,
+        router_gpu_ids=_parse_gpu_list(args.router_gpus),
+        judge_gpu_ids=_parse_gpu_list(args.judge_gpus),
+        embedding_gpu_id=args.embedding_gpu,
     )
 
     if args.interactive:

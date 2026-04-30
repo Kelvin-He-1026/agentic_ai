@@ -133,10 +133,19 @@ class BenchmarkAgent:
         max_steps: int = 5,
         router_model_path: str | None = None,
         judge_model_path: str | None = None,
+        router_gpu_ids: list[int] | None = None,
+        judge_gpu_ids: list[int] | None = None,
+        embedding_gpu_id: int | None = None,
     ):
         from react_agent import ReActAgent, _get_vectorstore, DEFAULT_ROUTER_MODEL, DEFAULT_JUDGE_MODEL
 
-        kwargs: dict = {"device": device, "max_steps": max_steps}
+        kwargs: dict = {
+            "device": device,
+            "max_steps": max_steps,
+            "router_gpu_ids": router_gpu_ids,
+            "judge_gpu_ids": judge_gpu_ids,
+            "embedding_gpu_id": embedding_gpu_id,
+        }
         if router_model_path is not None:
             kwargs["router_model_path"] = router_model_path
         if judge_model_path is not None:
@@ -422,6 +431,9 @@ def run_benchmark(
     max_steps: int = 5,
     router_model_path: str | None = None,
     judge_model_path: str | None = None,
+    router_gpu_ids: list[int] | None = None,
+    judge_gpu_ids: list[int] | None = None,
+    embedding_gpu_id: int | None = None,
 ) -> dict:
     """Run the full benchmark and return raw results for later judging."""
     print(f"\n{'='*60}")
@@ -430,12 +442,21 @@ def run_benchmark(
         print(f"  Router model: {router_model_path}")
     if judge_model_path:
         print(f"  Judge model:  {judge_model_path}")
+    if router_gpu_ids is not None:
+        print(f"  Router GPUs:  {router_gpu_ids}")
+    if judge_gpu_ids is not None:
+        print(f"  Judge GPUs:   {judge_gpu_ids}")
+    if embedding_gpu_id is not None:
+        print(f"  Embedding GPU: {embedding_gpu_id}")
     print(f"{'='*60}\n")
 
     agent = BenchmarkAgent(
         device=device, max_steps=max_steps,
         router_model_path=router_model_path,
         judge_model_path=judge_model_path,
+        router_gpu_ids=router_gpu_ids,
+        judge_gpu_ids=judge_gpu_ids,
+        embedding_gpu_id=embedding_gpu_id,
     )
 
     csv_rows: list[dict] = []
@@ -754,6 +775,15 @@ def main():
                         help="Path to router model (default: Qwen3-8B)")
     parser.add_argument("--judge-model", default=None,
                         help="Path to judge model (default: Qwen3-14B)")
+    parser.add_argument("--router-gpus", default=None,
+                        help="Comma-separated GPU IDs for the router (e.g. '0' or '0,1'). "
+                             "Default: use --device (cuda spans all visible GPUs).")
+    parser.add_argument("--judge-gpus", default=None,
+                        help="Comma-separated GPU IDs for the judge (e.g. '1' or '2,3'). "
+                             "Default: use --device.")
+    parser.add_argument("--embedding-gpu", type=int, default=None,
+                        help="GPU ID for the BGE retrieval embedding model. "
+                             "Defaults to the first router GPU when --router-gpus is set.")
     args = parser.parse_args()
 
     qa_path = Path(args.qa_file) if args.qa_file else DEFAULT_QA_FILE
@@ -768,6 +798,8 @@ def main():
     # Select questions: all retrieve + all others
     qa_pairs = select_questions(all_qa, num_retrieve=args.num_retrieve)
 
+    from react_agent import _parse_gpu_list
+
     run_benchmark(
         qa_pairs=qa_pairs,
         device=args.device,
@@ -775,6 +807,9 @@ def main():
         max_steps=args.max_steps,
         router_model_path=args.router_model,
         judge_model_path=args.judge_model,
+        router_gpu_ids=_parse_gpu_list(args.router_gpus),
+        judge_gpu_ids=_parse_gpu_list(args.judge_gpus),
+        embedding_gpu_id=args.embedding_gpu,
     )
 
 
