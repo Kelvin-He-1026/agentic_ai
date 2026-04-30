@@ -55,7 +55,7 @@ PROJECT_DIR = Path(__file__).resolve().parent.parent
 # HuggingFace hub.
 DEFAULT_MODELS_DIR = PROJECT_DIR / "models"
 DB_DIR = PROJECT_DIR / "db" / "hotpotqa_chroma"
-DATASET_DIR = PROJECT_DIR / "dataset"
+DATASET_DIR = Path(__file__).resolve().parent / "dataset"
 SAMPLES_JSON = DATASET_DIR / "hotpotqa_samples.json"
 
 DEFAULT_COLLECTION = "hotpotqa"

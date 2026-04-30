@@ -67,7 +67,7 @@ from model_loader import load_llm, load_embedding, MODELS_DIR  # noqa: E402
 # from /agentic_rag/models/ first via model_loader; missing models fall
 # back to the HuggingFace hub.
 DEFAULT_MODELS_DIR = PROJECT_DIR / "models"
-DATASET_DIR = PROJECT_DIR / "dataset"
+DATASET_DIR = Path(__file__).resolve().parent / "dataset"
 # Benchmark CSV / JSON results land here (one folder per benchmark family).
 OUTPUT_DIR = Path(__file__).resolve().parent / "output"
 DB_DIR = PROJECT_DIR / "db" / "hotpotqa_chroma"
